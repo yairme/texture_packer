@@ -128,7 +128,7 @@ void main() {
       final spriteSheetMap = texturePackerSpritesheet.toMap();
 
       // Assert
-      expect(spriteSheetMap, isMap);
+      expect(spriteSheetMap, texturePackerSpritesheet);
       // Add more specific assertions based on the expected content of spriteSheetMap
     });
 
@@ -178,9 +178,9 @@ void main() {
       final texturePackerSpritesheet = TexturePackerSpritesheet();
 
       // Assert
-      expect(texturePackerSpritesheet.frames, isEmpty);
-      expect(texturePackerSpritesheet.animations, isEmpty);
-      expect(texturePackerSpritesheet.meta, TexturePackerMetadata.empty);
+      expect(texturePackerSpritesheet.frames, TexturePackerFrame);
+      expect(texturePackerSpritesheet.animations, TexturePackerAnimation);
+      expect(texturePackerSpritesheet.meta, TexturePackerMetadata);
     });
 
     test('should create an instance with provided values', () async {
