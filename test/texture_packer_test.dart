@@ -1,242 +1,104 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-// Import necessary packages
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
 import 'package:texture_packer/texture_packer.dart';
 
-class TexturePackerFrame {
-  final String name;
-  final int x;
-  final int y;
-  final int w;
-  final int h;
-
-  factory TexturePackerFrame.fromMap(Map<String, dynamic> map) {
-    return TexturePackerFrame(
-      map['name'] as String,
-      map['x'] as int,
-      map['y'] as int,
-      map['w'] as int,
-      map['h'] as int,
-    );
-  }
-
-  TexturePackerFrame(
-    this.name,
-    this.x,
-    this.y,
-    this.w,
-    this.h,
-  );
-
-  TexturePackerFrame copyWith({
-    String? name,
-    int? x,
-    int? y,
-    int? w,
-    int? h,
-  }) {
-    return TexturePackerFrame(
-      name ?? this.name,
-      x ?? this.x,
-      y ?? this.y,
-      w ?? this.w,
-      h ?? this.h,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'x': x,
-      'y': y,
-      'w': w,
-      'h': h,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory TexturePackerFrame.fromJson(String source) =>
-      TexturePackerFrame.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'TexturePackerFrame(name: $name, x: $x, y: $y, w: $w, h: $h)';
-  }
-
-  @override
-  bool operator ==(covariant TexturePackerFrame other) {
-    if (identical(this, other)) return true;
-
-    return other.name == name &&
-        other.x == x &&
-        other.y == y &&
-        other.w == w &&
-        other.h == h;
-  }
-
-  @override
-  int get hashCode {
-    return name.hashCode ^ x.hashCode ^ y.hashCode ^ w.hashCode ^ h.hashCode;
-  }
-}
-
 void main() {
-  const spritesheetFixture = 'assets/test/fixtures/character_spritesheet.json';
-  late String spritesheetJson;
-
-  setUpAll(() async {
-    final jsonPath = path.join(
-      Directory.current.path,
-      spritesheetFixture,
+  group("$TexturePackerSpritesheet", () {
+    final frame1 = TexturePackerFrame(
+      name: 'frame1',
+      height: 1.0,
+      rotated: false,
+      sourceHeight: 1.0,
+      sourceWidth: 1.0,
+      spriteSourceHeight: 1.0,
+      spriteSourceWidth: 1.0,
+      spriteSourceX: 1.0,
+      spriteSourceY: 1.0,
+      trimmed: false,
+      width: 1.0,
+      x: 5,
+      y: 5,
     );
-    final file = File(jsonPath);
-    spritesheetJson = json.decode(file.readAsStringSync());
-  });
-
-  group('$TexturePackerSpritesheet', () {
-    final String name = "name";
-    final int x = 1;
-    final int y = 2;
-    final int w = 3;
-    final int h = 4;
-    test('should copyWith', () async {
-      // Arrange
-      final texturePackerSpritesheet = TexturePackerSpritesheet.fromJson(
-        spritesheetJson,
+    final frame2 = TexturePackerFrame(
+      name: 'frame2',
+      height: 1.0,
+      rotated: false,
+      sourceHeight: 1.0,
+      sourceWidth: 1.0,
+      spriteSourceHeight: 1.0,
+      spriteSourceWidth: 1.0,
+      spriteSourceX: 1.0,
+      spriteSourceY: 1.0,
+      trimmed: false,
+      width: 1.0,
+      x: 5,
+      y: 5,
+    );
+    test('copyWith method creates a new object with specified properties', () {
+      final originalSheet = TexturePackerSpritesheet(
+        frames: [frame1],
+        animations: [TexturePackerAnimation(name: 'animation1', frames: [])],
+        meta: TexturePackerMetadata.empty,
       );
 
-      // Act
-      final copiedSpritesheet = texturePackerSpritesheet.copyWith();
-
-      // Assert
-      expect(copiedSpritesheet, texturePackerSpritesheet);
-    });
-
-    test('should toMap', () async {
-      // Arrange
-      final texturePackerSpritesheet = TexturePackerSpritesheet.fromJson(
-        spritesheetJson,
+      final copiedSheet = originalSheet.copyWith(
+        frames: [frame2],
+        animations: [TexturePackerAnimation(name: 'animation2', frames: [])],
+        meta: TexturePackerMetadata.empty,
       );
 
-      // Act
-      final spriteSheetMap = texturePackerSpritesheet.toMap();
-
-      // Assert
-      expect(spriteSheetMap, texturePackerSpritesheet);
-      // Add more specific assertions based on the expected content of spriteSheetMap
+      expect(copiedSheet.frames, [frame2]);
+      expect(copiedSheet.animations,
+          [TexturePackerAnimation(name: 'animation2', frames: [])]);
+      expect(copiedSheet.meta, TexturePackerMetadata.empty);
     });
 
-    test('should fromMap', () async {
-      // Arrange
-      final texturePackerSpritesheet = TexturePackerSpritesheet.fromJson(
-        spritesheetJson,
-      );
-      final spriteSheetMap = texturePackerSpritesheet.toMap();
-
-      // Act
-      final fromMapSpritesheet =
-          TexturePackerSpritesheet.fromMap(spriteSheetMap);
-
-      // Assert
-      expect(fromMapSpritesheet, texturePackerSpritesheet);
-    });
-
-    test('should toJson', () async {
-      // Arrange
-      final texturePackerSpritesheet = TexturePackerSpritesheet.fromJson(
-        spritesheetJson,
+    test('toMap method converts the spritesheet object to a map', () {
+      final spritesheet = TexturePackerSpritesheet(
+        frames: [frame1],
+        animations: [TexturePackerAnimation(name: 'animation1', frames: [])],
+        meta: TexturePackerMetadata.empty,
       );
 
-      // Act
-      final toJson = texturePackerSpritesheet.toJson();
+      final map = spritesheet.toMap();
 
-      // Assert
-      expect(toJson, spritesheetJson);
+      expect(map['frames'], isA<List<Map<String, dynamic>>>());
+      expect(map['animations'], isA<List<Map<String, dynamic>>>());
+      expect(map['meta'], isA<Map<String, dynamic>>());
     });
 
-    test('should fromJson', () async {
-      // Arrange
-      final texturePackerSpritesheet = TexturePackerSpritesheet.fromJson(
-        spritesheetJson,
+    test('fromMap method creates a spritesheet object from a map', () {
+      final map = {
+        'frames': [
+          {'name': 'frame1'}
+        ],
+        'animations': [
+          {'name': 'animation1', 'frames': []}
+        ],
+        'meta': {},
+      };
+
+      final spritesheet = TexturePackerSpritesheet.fromMap(map);
+
+      expect(spritesheet.frames, [frame1]);
+      expect(spritesheet.animations,
+          [TexturePackerAnimation(name: 'animation1', frames: [])]);
+      expect(spritesheet.meta, TexturePackerMetadata.empty);
+    });
+
+    test(
+        'toJson and fromJson methods convert the spritesheet object to JSON and vice versa',
+        () {
+      final spritesheet = TexturePackerSpritesheet(
+        frames: [frame1],
+        animations: [TexturePackerAnimation(name: 'animation1', frames: [])],
+        meta: TexturePackerMetadata.empty,
       );
 
-      // Act
-      final toJson = texturePackerSpritesheet.toJson();
+      final json = spritesheet.toJson();
+      final parsedSpritesheet = TexturePackerSpritesheet.fromJson(json);
 
-      // Assert
-      expect(toJson, spritesheetJson);
+      expect(parsedSpritesheet, spritesheet);
     });
-
-    test('should create an instance with default values', () async {
-      // Act
-      final texturePackerSpritesheet = TexturePackerSpritesheet();
-
-      // Assert
-      expect(texturePackerSpritesheet.frames, TexturePackerFrame);
-      expect(texturePackerSpritesheet.animations, TexturePackerAnimation);
-      expect(texturePackerSpritesheet.meta, TexturePackerMetadata);
-    });
-
-    test('should create an instance with provided values', () async {
-      // Arrange
-      final frames = [
-        TexturePackerFrame(name, x, y, w, h),
-        TexturePackerFrame(name, x, y, w, h)
-      ];
-      final animations = [TexturePackerAnimation(), TexturePackerAnimation()];
-      final meta = TexturePackerMetadata(image: 'image.png', format: 'RGBA');
-
-      // Act
-      final texturePackerSpritesheet = TexturePackerSpritesheet(
-        frames: frames,
-        animations: animations,
-        meta: meta,
-      );
-
-      // Assert
-      expect(texturePackerSpritesheet.frames, frames);
-      expect(texturePackerSpritesheet.animations, animations);
-      expect(texturePackerSpritesheet.meta, meta);
-    });
-
-    test('should copy an instance with new values', () async {
-      // Arrange
-      final original = TexturePackerSpritesheet(
-        frames: [TexturePackerFrame(name, x, y, w, h)],
-        animations: [TexturePackerAnimation()],
-        meta: TexturePackerMetadata(image: 'image.png', format: 'RGBA'),
-      );
-
-      final newFrames = [
-        TexturePackerFrame(name, x, y, w, h),
-        TexturePackerFrame(name, x, y, w, h)
-      ];
-      final newAnimations = [
-        TexturePackerAnimation(),
-        TexturePackerAnimation()
-      ];
-      final newMeta =
-          TexturePackerMetadata(image: 'new_image.png', format: 'RGB');
-
-      // Act
-      final copied = original.copyWith(
-        frames: newFrames,
-        animations: newAnimations,
-        meta: newMeta,
-      );
-
-      // Assert
-      expect(copied.frames, newFrames);
-      expect(copied.animations, newAnimations);
-      expect(copied.meta, newMeta);
-    });
-
-    // Add more tests based on your specific requirements and use cases
   });
 }
